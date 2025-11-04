@@ -21,13 +21,13 @@ NAME_RE = re.compile(
             (?P<name>[А-ЯЁA-Z][а-яёa-z]+)
             (?:\s+(?P<patr>[А-ЯЁA-Z][а-яёa-z]+))?
           |
-    
             (?P<i1>[А-ЯЁA-Z])\.\s*(?P<i2>[А-ЯЁA-Z])\.
         )
     )?
     """,
     re.VERBOSE,
 )
+
 
 def parse_lesson_line(line: str) -> Lesson:
     text = line.strip()
@@ -104,3 +104,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
