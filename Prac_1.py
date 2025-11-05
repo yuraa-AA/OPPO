@@ -15,6 +15,7 @@ class Lesson:
     dt: datetime
     teacher: str
 
+
 def parse_lesson_line(line: str) -> Lesson:
     text = line.strip()
 
