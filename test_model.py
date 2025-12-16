@@ -33,7 +33,7 @@ class TestModelParsing:
         assert "Иванов" in lesson.teacher
 
     def test_parse_without_teacher(self):
-        line = '12.09.2025 10:30'
+        line = "12.09.2025 10:30"
         lesson = parse_lesson_line(line)
 
         assert lesson.date == "12.09.2025"
@@ -107,9 +107,11 @@ class TestSortingAndFiltering:
 
         res = sort_lessons(lessons)
 
-        assert [l.date for l in res[:2]] == ["11.09.2025", "12.09.2025"]
-
-        assert [l.teacher for l in res[2:]] == ["BadDate", "NoDate"]
+        assert [lesson.date for lesson in res[:2]] == [
+                 "11.09.2025",
+                 "12.09.2025",
+                ]
+        assert [lesson.teacher for lesson in res[2:]] == ["BadDate", "NoDate"]
 
     def test_sort_is_stable_for_same_date(self):
         lessons = [
@@ -118,7 +120,7 @@ class TestSortingAndFiltering:
             Lesson("12.09.2025", "10:00", "C"),
         ]
         res = sort_lessons(lessons)
-        assert [l.teacher for l in res] == ["A", "B", "C"]
+        assert [lesson.teacher for lesson in res] == ["A", "B", "C"]
 
     def test_filter_by_teacher_startswith_case_insensitive(self):
         lessons = [
@@ -129,7 +131,7 @@ class TestSortingAndFiltering:
         ]
 
         res = filter_by_teacher(lessons, "ИВА")
-        assert [l.teacher for l in res] == ["Иванов", "иванович"]
+        assert [lesson.teacher for lesson in res] == ["Иванов", "иванович"]
 
     def test_filter_by_teacher_empty_surname(self):
         lessons = [
@@ -138,4 +140,4 @@ class TestSortingAndFiltering:
             Lesson("14.09.2025", "12:00", ""),
         ]
         res = filter_by_teacher(lessons, "")
-        assert [l.teacher for l in res] == ["Иванов", "Петров"]
+        assert [lesson.teacher for lesson in res] == ["Иванов", "Петров"]
