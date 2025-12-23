@@ -75,7 +75,7 @@ class TestBoundaries:
             ("", False),
         ],
     )
-    def test_parse_date_safe_boundaries(self, date_str, expected_valid):
+    def test_parse_date_safe_boundaries(self, date_str, expected_valid): # граничные значения
         dt = parse_date_safe(date_str)
         assert (dt is not None) == expected_valid
 
@@ -89,7 +89,7 @@ class TestBoundaries:
             ("1.1.2025 Иванов 10:30", "", "10:30"),
         ],
     )
-    def test_parse_lesson_line_time_date_edges(self, line, exp_date, exp_time):
+    def test_parse_lesson_line_time_date_edges(self, line, exp_date, exp_time): # граничные значения
         lesson = parse_lesson_line(line)
         assert lesson.date == exp_date
         assert lesson.time == exp_time
@@ -97,7 +97,7 @@ class TestBoundaries:
 
 class TestSortingAndFiltering:
 
-    def test_sort_lessons_by_date_only_valid_first(self):
+    def test_sort_lessons_by_date_only_valid_first(self): # сортировка
         lessons = [
             Lesson("12.09.2025", "10:30", "Иванов"),
             Lesson("11.09.2025", "09:00", "Петров"),
@@ -113,7 +113,7 @@ class TestSortingAndFiltering:
                 ]
         assert [lesson.teacher for lesson in res[2:]] == ["BadDate", "NoDate"]
 
-    def test_sort_is_stable_for_same_date(self):
+    def test_sort_is_stable_for_same_date(self): # сортировка
         lessons = [
             Lesson("12.09.2025", "12:00", "A"),
             Lesson("12.09.2025", "09:00", "B"),
@@ -122,7 +122,7 @@ class TestSortingAndFiltering:
         res = sort_lessons(lessons)
         assert [lesson.teacher for lesson in res] == ["A", "B", "C"]
 
-    def test_filter_by_teacher_startswith_case_insensitive(self):
+    def test_filter_by_teacher_startswith_case_insensitive(self): # фильтрация
         lessons = [
             Lesson("12.09.2025", "10:30", "Иванов"),
             Lesson("13.09.2025", "11:00", "иванович"),
@@ -133,7 +133,7 @@ class TestSortingAndFiltering:
         res = filter_by_teacher(lessons, "ИВА")
         assert [lesson.teacher for lesson in res] == ["Иванов", "иванович"]
 
-    def test_filter_by_teacher_empty_surname(self):
+    def test_filter_by_teacher_empty_surname(self): # фильтрация
         lessons = [
             Lesson("12.09.2025", "10:30", "Иванов"),
             Lesson("13.09.2025", "11:00", "Петров"),
