@@ -141,3 +141,66 @@ class TestSortingAndFiltering:
         ]
         res = filter_by_teacher(lessons, "")
         assert [lesson.teacher for lesson in res] == ["Иванов", "Петров"]
+
+class TestInvalidData:
+
+    @pytest.mark.parametrize(
+        "date_str",
+        [
+            "31.02.2025",
+            "30.02.2024",
+            "29.02.2023",
+            "29.02.1900",
+            "31.04.2025",
+            "31.06.2025",
+            "31.11.2025",
+            "00.01.2025",
+            "01.00.2025",
+            "01.13.2025",
+        ],
+    )
+    def test_parse_date_safe_invalidData(self, date_str):
+        assert parse_date_safe(date_str) is None
+
+    @pytest.mark.parametrize(
+        "line, expected_date",
+        [
+            ('31.02.2025 "Иванов" 10:30', "31.02.2025"),
+            ("31.11.2025 Петров 09:00", "31.11.2025"),
+            ("29.02.1900 Sidorov 12:00", "29.02.1900"),
+        ],
+    )
+    def test_parse_lesson_line_invalidDate_invalidData(self, line, expected_date):
+        lesson = parse_lesson_line(line)
+        assert lesson.date == expected_date
+        assert parse_date_safe(lesson.date) is None
+
+    @pytest.mark.parametrize(
+        "line",
+        [
+            "31/02/2025 Иванов 10:30",
+            "1.2.2025 Иванов 10:30",
+            "31122025 Иванов 10:30",
+            "aa.bb.cccc Иванов 10:30",
+        ],
+    )
+    def test_parse_lesson_line_invalidDateFormat_invalidData(self, line):
+        lesson = parse_lesson_line(line)
+        assert lesson.date == ""
+
+    @pytest.mark.parametrize(
+        "line",
+        [
+            "12.09.2025 Иванов 9:5",
+            "12.09.2025 Иванов 09:5",
+            "12.09.2025 Иванов 9:005",
+            "12.09.2025 Иванов 9",
+        ],
+    )
+    def test_parse_lesson_line_invalidTimeFormat_invalidData(self, line):
+        lesson = parse_lesson_line(line)
+        assert lesson.time == ""
+
+    def test_parse_lesson_line_teacherTooManyWords_invalidData(self):
+        lesson = parse_lesson_line('12.09.2025 "Иванов Иван Иванович" 10:30')
+        assert lesson.teacher == "Иванов Иван"
